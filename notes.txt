@@ -1,0 +1,85 @@
+change etc/mahalia/config
+
+    # jack settings
+    JACK_PRIORITY=90               # argument to parameter -P
+    JACK_SOUNDCARD= alsa # argument to alsa parameter -d SPACE HERE TEST THIS WTF
+    JACK_SAMPLERATE=32000          # argument to alsa parameter -r
+    #JACK_BUFFER=64
+    JACK_FRAMES=2                  # argument to alsa parameter -n
+    JACK_OPTS=""                   # additional arguments at end of command line
+    JACK_FRONT_OPTS="-S -R"           # additional arguments directly after "jackd"
+    NOJACK=                       # jack will only be started when this is empty
+
+    # Path to mha configuration
+    export MHA_CONFIG_PATH="/etc/mahalia/mha_configuration"
+
+    # openMHA settings
+    OPENMHA_INTERFACE="0.0.0.0"
+    OPENMHA_PORT="33337"
+    OPENMHA_OPTS="?read:/home/mha/bc_15.cfg"
+
+disable node_red
+
+    sudo systemctl disable --now mahalia-nodered
+
+bc_15.cfg
+
+    nchannels_in = 1 
+    fragsize = 64
+    srate = 32000
+
+    # MHA library name
+    mhalib = transducers
+
+    mha.calib_in.peaklevel = [115]
+    mha.calib_out.peaklevel = [106]
+
+
+    # IO plugin library name
+    iolib = MHAIOJackdb
+
+    mha.plugin_name = overlapadd
+
+    mha.overlapadd.fftlen = 512
+    mha.overlapadd.wnd.type = hanning
+    mha.overlapadd.wnd.len = 256
+    mha.overlapadd.wnd.pos = 0.5
+    mha.overlapadd.zerownd.type = hanning
+    mha.overlapadd.plugin_name = mhachain
+
+    # list of plugins
+    mha.overlapadd.mhachain.algos = [ ... 
+    fftfilterbank ... 
+    dc ... 
+    combinechannels ...
+    ]
+
+    # Frequency bands
+    mha.overlapadd.mhachain.fftfilterbank.f = [250 500 1000 2000 4000 8000]
+    mha.overlapadd.mhachain.fftfilterbank.fscale = log
+    mha.overlapadd.mhachain.fftfilterbank.ftype = center
+
+    # gaintable data in dB gains
+    mha.overlapadd.mhachain.dc.gtdata = [[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0]]
+    # input level for first gain entry in dB SPL
+    mha.overlapadd.mhachain.dc.gtmin = [0]
+
+    # level step size in dB
+    mha.overlapadd.mhachain.dc.gtstep = [40]
+
+    # attack time constant in s
+    mha.overlapadd.mhachain.dc.tau_attack = [0.02]
+
+
+    # decay time constant in s
+    mha.overlapadd.mhachain.dc.tau_decay = [0.1]
+
+    # Name of fftfilterbank plugin.  Used to extract frequency information.
+    mha.overlapadd.mhachain.dc.fb = fftfilterbank
+    mha.overlapadd.mhachain.dc.chname = fftfilterbank_nchannels
+    mha.overlapadd.mhachain.combinechannels.outchannels = 1 
+
+
+    io.con_in = [system:capture_1]
+    io.con_out = [system:playback_1]
+
