@@ -13,7 +13,6 @@ const net = require('net')
 
 const client = net.connect({port: 33337, host: "10.0.0.1"}, () => {
     console.log('Connected to tcp config!')
-    client.write("cmd=start\n")
 })
 
 client.on('data', (data) => {
