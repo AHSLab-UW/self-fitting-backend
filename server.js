@@ -38,10 +38,37 @@ app.get("/device", (req, res) => {
   // Handle TCP errors
   client.on("error", (err) => {
     console.error("TCP error:", err);
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while communicating with the TCP server",
-      });
+    res.status(500).json({
+      error: "An error occurred while communicating with the TCP server",
+    });
   });
+});
+
+// store all requests from /store in a csv
+app.get("/store", (req, res) => {
+  const fs = require("fs");
+
+  const time = req.query.time;
+  const name = req.query.name;
+  const a = req.query.a;
+  const coordinate = req.query.coordinate;
+  const gainDelta = req.query.gainDelta;
+  const glast = req.query.glast;
+  const step = req.query.step;
+
+  const data = `${time},${name},${a},${coordinate},${gainDelta},${glast},${step}\n`;
+
+  const filename = `${name}_${new Date().toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "2-digit",
+  })}.csv`;
+
+  fs.appendFile(filename, data, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  res.status(200).send("Data stored");
 });
