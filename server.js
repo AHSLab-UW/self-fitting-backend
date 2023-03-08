@@ -1,4 +1,6 @@
 const express = require("express");
+const fs = require("fs");
+
 const app = express();
 const port = 3000;
 
@@ -46,8 +48,6 @@ app.get("/device", (req, res) => {
 
 // store all requests from /store in a csv
 app.get("/store", (req, res) => {
-  const fs = require("fs");
-
   const time = req.query.time;
   const name = req.query.name;
   const a = req.query.a;
@@ -58,11 +58,13 @@ app.get("/store", (req, res) => {
 
   const data = `${time},${name},${a},${coordinate},${gainDelta},${glast},${step}\n`;
 
-  const filename = `${name}_${new Date().toLocaleDateString("en-US", {
-    month: "2-digit",
-    day: "2-digit",
-    year: "2-digit",
-  })}.csv`;
+  const filename = `./logs/${name}_${new Date()
+    .toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    })
+    .replace("/", "_").replace("/", "_")}.csv`;
 
   fs.appendFile(filename, data, (err) => {
     if (err) {
