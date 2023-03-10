@@ -56,7 +56,7 @@ app.get("/store", (req, res) => {
   const glast = req.query.glast;
   const step = req.query.step;
 
-  const data = `${time},${name},${a},${coordinate},${gainDelta},${glast},${step}\n`;
+  const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${glast}\t${step}\n`;
 
   const filename = `./logs/${name}_${new Date()
     .toLocaleDateString("en-US", {
