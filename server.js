@@ -59,7 +59,7 @@ app.get("/store", (req, res) => {
 
   const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${g}\t${glast}\t${step}\n`;
 
-  const filename = `./logs/${name}.tsv`;
+  const filename = `./logs/${name.replace(/\s/g, '_')}.tsv`;
 
   fs.appendFile(filename, data, (err) => {
     if (err) {
@@ -69,3 +69,18 @@ app.get("/store", (req, res) => {
 
   res.status(200).send("Data stored");
 });
+
+app.get("/storeg", (req, res) => {
+  const g = req.query.g;
+  const name = req.query.name;
+
+  const filename = `./logs/${name.replace(/\s/g, '_')}_g.tsv`;
+
+  fs.appendFile(filename, data, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  res.status(200).send("Data stored");
+})
