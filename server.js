@@ -70,7 +70,7 @@ app.get("/store", (req, res) => {
   res.status(200).send("Data stored");
 });
 
-app.get("/storeg", (req, res) => {
+app.get("/storestep", (req, res) => {
   const g = req.query.g;
   const name = req.query.name;
   const step = req.query.step;
