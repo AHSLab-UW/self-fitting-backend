@@ -59,7 +59,7 @@ app.get("/store", (req, res) => {
 
   const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${g}\t${glast}\t${step}\n`;
 
-  const filename = name
+  const filename = `./logs/${name}.tsv`;
 
   fs.appendFile(filename, data, (err) => {
     if (err) {
