@@ -53,18 +53,13 @@ app.get("/store", (req, res) => {
   const a = req.query.a;
   const coordinate = req.query.coordinate;
   const gainDelta = req.query.gainDelta;
+  const g = req.query.g;
   const glast = req.query.glast;
   const step = req.query.step;
 
-  const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${glast}\t${step}\n`;
+  const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${g}\t${glast}\t${step}\n`;
 
-  const filename = `./logs/${name}_${new Date()
-    .toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "2-digit",
-    })
-    .replace("/", "_").replace("/", "_")}.csv`;
+  const filename = name
 
   fs.appendFile(filename, data, (err) => {
     if (err) {
