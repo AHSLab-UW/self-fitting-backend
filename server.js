@@ -73,9 +73,12 @@ app.get("/store", (req, res) => {
 app.get("/storeg", (req, res) => {
   const g = req.query.g;
   const name = req.query.name;
+  const step = req.query.step;
 
   const filename = `./logs/${name.replace(/\s/g, '_')}_g.tsv`;
 
+  const data = `${name}\t${step}\t${g}`
+  
   fs.appendFile(filename, data, (err) => {
     if (err) {
       console.log(err);
