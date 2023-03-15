@@ -77,7 +77,7 @@ app.get("/storestep", (req, res) => {
 
   const filename = `./logs/${name.replace(/\s/g, '_')}_g.tsv`;
 
-  const data = `${name}\t${step}\t${g}`
+  const data = `${name}\t${step}\t${g}\n`
   
   fs.appendFile(filename, data, (err) => {
     if (err) {
