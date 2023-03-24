@@ -91,7 +91,7 @@ app.get("/storestep", (req, res) => {
 
 const finalNameExtensions = ["-restaurant-3x3_g.tsv", "-restaurant-5x5_g.tsv", "-driving-3x3_g.tsv", "-driving-5x5_g.tsv"];
 
-app.get("/final", (req, res) => {
+app.get("/admin", (req, res) => {
   const name = req.query.name;
 
   // for each file extension append to name and check if file exists
