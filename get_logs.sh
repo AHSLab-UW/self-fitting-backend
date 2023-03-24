@@ -1,1 +1,1 @@
-scp mha@10.0.0.1:/home/mha/self-fitting-backend/logs/* .
+scp mha@10.0.0.1:/home/mha/self-fitting-backend/logs/* ./logs
