@@ -78,7 +78,7 @@ app.get("/storestep", (req, res) => {
   const filename = `./logs/${name.replace(/\s/g, '_')}_g.tsv`;
 
   const data = `${name}\t${step}\t${g}\n`
-  
+
   fs.appendFile(filename, data, (err) => {
     if (err) {
       console.log(err);
@@ -93,28 +93,36 @@ const finalNameExtensions = ["-restaurant-3x3_g.tsv", "-restaurant-5x5_g.tsv", "
 
 app.get("/final", (req, res) => {
   const name = req.query.name;
-  
+
   // for each file extension append to name and check if file exists
   // if exists get the last column of the tsv
   // concatenate all and send it back in a json format
-  
+
   let finalData = [];
 
   finalNameExtensions.forEach((extension) => {
-    const filename = name + extension;
-    
+    const filename = "./logs/" + name + extension;
+
+    console.log(filename)
+
     // Check if the file exists
     if (!fs.existsSync(filename)) {
       finalData.push("null");
+    } else {
+      // Read the file
+      // Read the TSV file and get the last column
+      const fileContent = fs.readFileSync(filename, 'utf-8');
+      console.log(fileContent)
+
+      const rows = fileContent.trim().split('\n');
+      console.log(rows)
+
+      const lastColumn = rows.map(row => row.split('\t').pop());
+      console.log(lastColumn)
+
+      const finalG = lastColumn[lastColumn.length - 1];
+      finalData.push(finalG);
     }
-
-    // Read the file
-    // Read the TSV file and get the last column
-    const fileContent = fs.readFileSync(filename, 'utf-8');
-    const rows = fileContent.trim().split('\n');
-    const lastColumn = rows.map(row => row.split('\t').pop());
-
-    finalData.push(lastColumn);
   });
 
   // convert to json with extension title
