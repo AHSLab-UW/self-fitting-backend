@@ -87,3 +87,43 @@ app.get("/storestep", (req, res) => {
 
   res.status(200).send("Data stored");
 })
+
+
+const finalNameExtensions = ["-restaurant-3x3_g.tsv", "-restaurant-5x5_g.tsv", "-driving-3x3_g.tsv", "-driving-5x5_g.tsv"];
+
+app.get("/final", (req, res) => {
+  const name = req.query.name;
+  
+  // for each file extension append to name and check if file exists
+  // if exists get the last column of the tsv
+  // concatenate all and send it back in a json format
+  
+  let finalData = [];
+
+  finalNameExtensions.forEach((extension) => {
+    const filename = name + extension;
+    
+    // Check if the file exists
+    if (!fs.existsSync(filename)) {
+      finalData.push("null");
+    }
+
+    // Read the file
+    // Read the TSV file and get the last column
+    const fileContent = fs.readFileSync(filename, 'utf-8');
+    const rows = fileContent.trim().split('\n');
+    const lastColumn = rows.map(row => row.split('\t').pop());
+
+    finalData.push(lastColumn);
+  });
+
+  // convert to json with extension title
+  const finalJson = {
+    restaurant3x3: finalData[0],
+    restaurant5x5: finalData[1],
+    driving3x3: finalData[2],
+    driving5x5: finalData[3],
+  }
+
+  res.status(200).send(finalJson);
+});
