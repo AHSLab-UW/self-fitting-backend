@@ -5,7 +5,7 @@ const app = express();
 const port = 3000;
 
 // serve react app html
-app.use(express.static("dist"));
+app.use(express.static("/home/mha/self-fitting-backend/dist"));
 
 app.listen(port, () => {
   console.log(`React app listening on port ${port}`);
