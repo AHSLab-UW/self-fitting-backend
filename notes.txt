@@ -2,8 +2,8 @@ change etc/mahalia/config
 
     # jack settings
     JACK_PRIORITY=90               # argument to parameter -P
-    JACK_SOUNDCARD= alsa # argument to alsa parameter -d SPACE HERE TEST THIS WTF
-    JACK_SAMPLERATE=32000          # argument to alsa parameter -r
+    JACK_SOUNDCARD= alsa # argument to alsa parameter -d
+    JACK_SAMPLERATE=24000          # argument to alsa parameter -r
     #JACK_BUFFER=64
     JACK_FRAMES=2                  # argument to alsa parameter -n
     JACK_OPTS=""                   # additional arguments at end of command line
@@ -16,70 +16,67 @@ change etc/mahalia/config
     # openMHA settings
     OPENMHA_INTERFACE="0.0.0.0"
     OPENMHA_PORT="33337"
-    OPENMHA_OPTS="?read:/home/mha/bc_15.cfg"
+    OPENMHA_OPTS
 
 disable node_red
 
     sudo systemctl disable --now mahalia-nodered
 
-bc_15.cfg
+self_fit.cfg
 
-    nchannels_in = 1 
+    nchannels_in = 2
     fragsize = 64
-    srate = 32000
+    srate = 24000
 
     # MHA library name
     mhalib = transducers
 
-    mha.calib_in.peaklevel = [115]
-    mha.calib_out.peaklevel = [106]
-
+    mha.calib_in.peaklevel = [120 120]
+    mha.calib_out.peaklevel = [107 107]
 
     # IO plugin library name
     iolib = MHAIOJackdb
 
-    mha.plugin_name = overlapadd
+    mha.plugin_name = mhachain
+    mha.mhachain.algos = [addsndfile overlapadd]
 
-    mha.overlapadd.fftlen = 512
-    mha.overlapadd.wnd.type = hanning
-    mha.overlapadd.wnd.len = 256
-    mha.overlapadd.wnd.pos = 0.5
-    mha.overlapadd.zerownd.type = hanning
-    mha.overlapadd.plugin_name = mhachain
+    mha.mhachain.addsndfile.filename = confirm_sound.wav
+    mha.mhachain.addsndfile.levelmode = rms
+    mha.mhachain.addsndfile.path = /home/mha/
+    mha.mhachain.addsndfile.channels = [0 1]
+    mha.mhachain.addsndfile.loop = no
+    mha.mhachain.addsndfile.level = 50
+
+    mha.mhachain.overlapadd.fftlen = 256
+    mha.mhachain.overlapadd.wnd.type = hanning
+    mha.mhachain.overlapadd.wnd.len = 128
+    mha.mhachain.overlapadd.wnd.pos = 0.5
+    mha.mhachain.overlapadd.zerownd.type = hanning
+    mha.mhachain.overlapadd.plugin_name = mhachain
 
     # list of plugins
-    mha.overlapadd.mhachain.algos = [ ... 
+    mha.mhachain.overlapadd.mhachain.algos = [ ... 
     fftfilterbank ... 
     dc ... 
     combinechannels ...
     ]
 
     # Frequency bands
-    mha.overlapadd.mhachain.fftfilterbank.f = [250 500 1000 2000 4000 8000]
-    mha.overlapadd.mhachain.fftfilterbank.fscale = log
-    mha.overlapadd.mhachain.fftfilterbank.ftype = center
+    mha.mhachain.overlapadd.mhachain.fftfilterbank.f = [250 500 1000 2000 4000 8000]
+    mha.mhachain.overlapadd.mhachain.fftfilterbank.fscale = log
+    mha.mhachain.overlapadd.mhachain.fftfilterbank.ftype = center
 
     # gaintable data in dB gains
-    mha.overlapadd.mhachain.dc.gtdata = [[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0]]
-    # input level for first gain entry in dB SPL
-    mha.overlapadd.mhachain.dc.gtmin = [0]
-
-    # level step size in dB
-    mha.overlapadd.mhachain.dc.gtstep = [40]
-
-    # attack time constant in s
-    mha.overlapadd.mhachain.dc.tau_attack = [0.02]
-
-
-    # decay time constant in s
-    mha.overlapadd.mhachain.dc.tau_decay = [0.1]
+    mha.mhachain.overlapadd.mhachain.dc.gtdata = [[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0];[0 0 0]]
+    mha.mhachain.overlapadd.mhachain.dc.gtmin = [0]
+    mha.mhachain.overlapadd.mhachain.dc.gtstep = [40]
+    mha.mhachain.overlapadd.mhachain.dc.tau_attack = [0.02]
+    mha.mhachain.overlapadd.mhachain.dc.tau_decay = [0.1]
 
     # Name of fftfilterbank plugin.  Used to extract frequency information.
-    mha.overlapadd.mhachain.dc.fb = fftfilterbank
-    mha.overlapadd.mhachain.dc.chname = fftfilterbank_nchannels
-    mha.overlapadd.mhachain.combinechannels.outchannels = 1 
+    mha.mhachain.overlapadd.mhachain.dc.fb = fftfilterbank
+    mha.mhachain.overlapadd.mhachain.dc.chname = fftfilterbank_nchannels
+    mha.mhachain.overlapadd.mhachain.combinechannels.outchannels = 2
 
-
-    io.con_in = [system:capture_1]
-    io.con_out = [system:playback_1]
-
+    io.con_in = [system:capture_1 system:capture_2]
+    io.con_out = [system:playback_1 system:playback_2]
