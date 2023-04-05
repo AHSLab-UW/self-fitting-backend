@@ -4,8 +4,10 @@ const fs = require("fs");
 const app = express();
 const port = 3000;
 
+const PATH = "/home/mha/self-fitting-backend/"
+
 // serve react app html
-app.use(express.static("/home/mha/self-fitting-backend/dist"));
+app.use(express.static(PATH + "dist"));
 
 app.listen(port, () => {
   console.log(`React app listening on port ${port}`);
@@ -20,7 +22,7 @@ const net = require("net");
 // act as intermediate for react app and tcp server on get request
 app.get("/device", (req, res) => {
   const client = net.connect({ port: 33337, host: "10.0.0.1" }, () => {
-    console.log("Connected to tcp config!");
+    // console.log("Connected to tcp config!");
   });
 
   const command = req.query.command;
@@ -30,7 +32,7 @@ app.get("/device", (req, res) => {
 
   // Listen for the response from the TCP server
   client.on("data", (data) => {
-    console.log(`Received response from MHA: \n\n ${data}`);
+    // console.log(`Received response from MHA: \n\n ${data}`);
     // Convert the response from the TCP server to an HTTP response
     res.status(200).send(data);
     // Close the TCP connection
@@ -59,7 +61,7 @@ app.get("/store", (req, res) => {
 
   const data = `${time}\t${name}\t${a}\t${coordinate}\t${gainDelta}\t${g}\t${glast}\t${step}\n`;
 
-  const filename = `./logs/${name.replace(/\s/g, '_')}.tsv`;
+  const filename = PATH + `logs/${name.replace(/\s/g, '_')}.tsv`;
 
   fs.appendFile(filename, data, (err) => {
     if (err) {
@@ -75,7 +77,7 @@ app.get("/storestep", (req, res) => {
   const name = req.query.name;
   const step = req.query.step;
 
-  const filename = `./logs/${name.replace(/\s/g, '_')}_g.tsv`;
+  const filename = PATH + `logs/${name.replace(/\s/g, '_')}_g.tsv`;
 
   const data = `${name}\t${step}\t${g}\n`
 
@@ -101,9 +103,7 @@ app.get("/admin", (req, res) => {
   let finalData = [];
 
   finalNameExtensions.forEach((extension) => {
-    const filename = "./logs/" + name + extension;
-
-    console.log(filename)
+    const filename = PATH + "logs/" + name + extension;
 
     // Check if the file exists
     if (!fs.existsSync(filename)) {
@@ -112,13 +112,10 @@ app.get("/admin", (req, res) => {
       // Read the file
       // Read the TSV file and get the last column
       const fileContent = fs.readFileSync(filename, 'utf-8');
-      console.log(fileContent)
 
       const rows = fileContent.trim().split('\n');
-      console.log(rows)
 
       const lastColumn = rows.map(row => row.split('\t').pop());
-      console.log(lastColumn)
 
       const finalG = lastColumn[lastColumn.length - 1];
       finalData.push(finalG);
