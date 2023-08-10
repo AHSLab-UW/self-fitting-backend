@@ -91,7 +91,7 @@ app.get("/storestep", (req, res) => {
 })
 
 
-const finalNameExtensions = ["-restaurant-3x3_g.tsv", "-restaurant-5x5_g.tsv", "-driving-3x3_g.tsv", "-driving-5x5_g.tsv"];
+const finalNameExtensions = ["-indoor-button_g.tsv", "-indoor-grid_g.tsv", "-outdoor-button_g.tsv", "-outdoor-grid_g.tsv"];
 
 app.get("/admin", (req, res) => {
   const name = req.query.name;
@@ -124,10 +124,10 @@ app.get("/admin", (req, res) => {
 
   // convert to json with extension title
   const finalJson = {
-    restaurant3x3: finalData[0],
-    restaurant5x5: finalData[1],
-    driving3x3: finalData[2],
-    driving5x5: finalData[3],
+    indoorButton: finalData[0],
+    indoorGrid: finalData[1],
+    outdoorButton: finalData[2],
+    outdoorButton: finalData[3],
   }
 
   res.status(200).send(finalJson);
